@@ -1,0 +1,24 @@
+lib: [
+  "_build/install/default/lib/aoc/META"
+  "_build/install/default/lib/aoc/dune-package"
+  "_build/install/default/lib/aoc/opam"
+]
+bin: [
+  "_build/install/default/bin/puzzle_1_1"
+  "_build/install/default/bin/puzzle_1_2"
+  "_build/install/default/bin/puzzle_2_1"
+  "_build/install/default/bin/puzzle_2_2"
+  "_build/install/default/bin/puzzle_3_1"
+  "_build/install/default/bin/puzzle_3_1_alt"
+  "_build/install/default/bin/puzzle_3_2"
+  "_build/install/default/bin/puzzle_4_1"
+  "_build/install/default/bin/puzzle_4_2"
+  "_build/install/default/bin/puzzle_5_1"
+  "_build/install/default/bin/puzzle_5_2"
+  "_build/install/default/bin/puzzle_6_1"
+  "_build/install/default/bin/puzzle_6_2"
+  "_build/install/default/bin/puzzle_7_1"
+  "_build/install/default/bin/puzzle_7_2"
+  "_build/install/default/bin/puzzle_8_1"
+  "_build/install/default/bin/puzzle_8_2"
+]
