@@ -1,0 +1,4 @@
+(executables
+ (names puzzle_1_1)
+ (public_names puzzle_1_1)
+ (libraries Helper base stdio))
