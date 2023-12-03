@@ -1,3 +1,3 @@
 (library
  (name "Helper")
- (libraries "str"))
+ (libraries core "str"))
