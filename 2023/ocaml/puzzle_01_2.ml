@@ -75,7 +75,7 @@ let rec sum_calibrations accum =
 let () = 
   match sum_calibrations 0 with
   | 0 -> printf "No elves\n"
-  | calibrations -> printf "Day 1.1: %d\n" calibrations
+  | calibrations -> printf "Day 1.2: %d\n" calibrations
 
   (*
   dune build puzzle_01_2.exe && cat ../data/day-01 | dune exec ./puzzle_01_2.exe  

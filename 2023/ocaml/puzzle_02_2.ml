@@ -53,7 +53,7 @@ let rec sum_valid_games accum =
 let () = 
   match sum_valid_games 0 with
   | 0 -> printf "Whiskey Tang Foxtrot\n"
-  | calibrations -> printf "Day 2.1: %d\n" calibrations
+  | calibrations -> printf "Day 2.2: %d\n" calibrations
 
   (*
   dune build puzzle_02_2.exe && cat ../data/day-02-test | dune exec ./puzzle_02_2.exe  
