@@ -28,3 +28,23 @@ let starts_with input prefix =
   let prefix_len = String.length prefix in
   if input_len < prefix_len then false
   else String.equal (String.sub input 0 prefix_len) prefix
+
+let trim str =
+  let is_space = function
+    | ' ' | '\n' | '\r' | '\t' -> true
+    | _ -> false
+  in
+  let len = String.length str in
+  let rec find_first_non_space i =
+    if i >= len then None
+    else if is_space str.[i] then find_first_non_space (i + 1)
+    else Some i
+  in
+  let rec find_last_non_space i =
+    if i < 0 then None
+    else if is_space str.[i] then find_last_non_space (i - 1)
+    else Some i
+  in
+  match find_first_non_space 0, find_last_non_space (len - 1) with
+  | Some i, Some j -> String.sub str i (j - i + 1)
+  | _ -> ""  
