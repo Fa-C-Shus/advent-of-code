@@ -28,6 +28,7 @@ let starts_with input prefix =
   let prefix_len = String.length prefix in
   if input_len < prefix_len then false
   else String.equal (String.sub input 0 prefix_len) prefix
+;;
 
 let trim str =
   let is_space = function
@@ -48,3 +49,8 @@ let trim str =
   match find_first_non_space 0, find_last_non_space (len - 1) with
   | Some i, Some j -> String.sub str i (j - i + 1)
   | _ -> ""  
+;;
+
+let split_string str = 
+  Str.split (Str.regexp " +") str
+;;
