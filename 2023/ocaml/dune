@@ -1,4 +1,4 @@
 (executables
- (names try_this puzzle_01_1 puzzle_01_2 puzzle_02_1 puzzle_02_2 puzzle_03_1 puzzle_03_2 puzzle_04_1 puzzle_04_2 puzzle_05_1 puzzle_05_2 puzzle_05_1bad puzzle_06_1 puzzle_06_2 puzzle_07_1 puzzle_07_2 puzzle_08_1 puzzle_08_2 puzzle_09_1 puzzle_09_2 puzzle_10_1 puzzle_10_2)
- (public_names try_this puzzle_01_1 puzzle_01_2 puzzle_02_1 puzzle_02_2 puzzle_03_1 puzzle_03_2 puzzle_04_1 puzzle_04_2 puzzle_05_1 puzzle_05_2 puzzle_05_1bad puzzle_06_1 puzzle_06_2 puzzle_07_1 puzzle_07_2 puzzle_08_1 puzzle_08_2 puzzle_09_1 puzzle_09_2 puzzle_10_1 puzzle_10_2)
+ (names try_this puzzle_01_1 puzzle_01_2 puzzle_02_1 puzzle_02_2 puzzle_03_1 puzzle_03_2 puzzle_04_1 puzzle_04_2 puzzle_05_1 puzzle_05_2 puzzle_05_1bad puzzle_06_1 puzzle_06_2 puzzle_07_1 puzzle_07_2 puzzle_08_1 puzzle_08_2 puzzle_09_1 puzzle_09_2 puzzle_10_1 puzzle_10_2 puzzle_11_1)
+ (public_names try_this puzzle_01_1 puzzle_01_2 puzzle_02_1 puzzle_02_2 puzzle_03_1 puzzle_03_2 puzzle_04_1 puzzle_04_2 puzzle_05_1 puzzle_05_2 puzzle_05_1bad puzzle_06_1 puzzle_06_2 puzzle_07_1 puzzle_07_2 puzzle_08_1 puzzle_08_2 puzzle_09_1 puzzle_09_2 puzzle_10_1 puzzle_10_2 puzzle_11_1)
  (libraries Helper base stdio sexplib))
