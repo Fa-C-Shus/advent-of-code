@@ -23,82 +23,43 @@ let print_grid grid =
   )
 ;;
 
-(* given a grid and axis (vertical|horizontal)
-   find the row or column that divides the grid 
-   symmetrically *)
-let get_symmetry grid axis =
-  match axis with 
-  | `vertical -> 
-    let cols = Array.length grid.(0) in
-    let rec get_symmetry' col =
-      if col >= cols then
-        None
-      else
-        let rec check_row row =
-          if row >= Array.length grid then
-            Some col
-          else
-            let c1 = grid.(row).(col) in
-            let c2 = grid.(row).(cols - col - 1) in
-            if (Char.equal c1 c2) then
-              check_row (row + 1)
-            else
-              None
-        in
-        match check_row 0 with
-        | None -> get_symmetry' (col + 1)
-        | Some col -> Some col
-    in
-    get_symmetry' 0
-  | `horizontal ->
-    let rows = Array.length grid in
-    let rec get_symmetry' row =
-      if row >= rows then
-        None
-      else
-        let rec check_col col =
-          if col >= Array.length grid.(0) then
-            Some row
-          else
-            let c1 = grid.(row).(col) in
-            let c2 = grid.(rows - row - 1).(col) in
-            if (Char.equal c1 c2) then
-              check_col (col + 1)
-            else
-              None
-        in
-        match check_col 0 with
-        | None -> get_symmetry' (row + 1)
-        | Some row -> Some row
-    in
-    get_symmetry' 0
-  (* let rows = Array.length grid in
-  let cols = Array.length grid.(0) in
-  let rec get_symmetry' row col =
-    if row >= rows || col >= cols then
-      None
-    else
-      let c1 = grid.(row).(col) in
-      let c2 = grid.(row).(cols - col - 1) in
-      if (Char.equal c1 c2) then
-        get_symmetry' (row + 1) col
-      else
-        Some (row, col)
+let calc_badness grid part2 axis =
+  let rows = List.length grid in
+  let cols = List.hd_exn grid |> String.length in
+  let calc_axis_badness pos delta_pos get_other_pos =
+    let badness = ref 0 in
+    for delta = 0 to delta_pos - 1 do
+      let pos1 = pos - delta in
+      let pos2 = pos + 1 + delta in
+      if pos1 >= 0 && pos2 < delta_pos then
+        for other = 0 to get_other_pos - 1 do
+          let char1, char2 = match axis with
+            | `Vertical -> List.nth_exn grid other |> fun row -> row.[pos1], row.[pos2]
+            | `Horizontal -> grid.(pos1).[other], grid.(pos2).[other]
+          in
+          if char1 <> char2 then incr badness
+        done
+    done;
+    !badness
   in
-  match axis with
-  | `vertical -> get_symmetry' 0 (cols / 2)
-  | `horizontal -> get_symmetry' (rows / 2) 0 *)
-;;
+  let total = ref 0 in
+  for i = 0 to (match axis with `Vertical -> cols - 1 | `Horizontal -> rows - 1) - 1 do
+    let badness = match axis with
+      | `Vertical -> calc_axis_badness i cols rows
+      | `Horizontal -> calc_axis_badness i rows cols
+    in
+    if badness = (if part2 then 1 else 0) then
+      total := !total + (if axis = `Horizontal then 100 else 1) * (i + 1)
+  done;
+  !total
 
 let rec sum_symmetry sum grids =
   match grids with
   | [] -> sum
   | grid :: grids' -> 
     printf "grid(cols, rows): (%d, %d)\n" (Array.length grid.(0)) (Array.length grid);
-    let h_sym = get_symmetry grid `horizontal in
-    printf "h_sym: %s\n" (Option.value_map h_sym ~default:"None" ~f:(fun x -> Int.to_string x));
-    let v_sym = get_symmetry grid `vertical in
-    printf "v_sym: %s\n" (Option.value_map v_sym ~default:"None" ~f:(fun x -> Int.to_string x));
+    let symmetry = (calc_badness grid false `Vertical) + (calc_badness grid false `Horizontal) in
+    printf "symmetry: %d\n" symmetry;
     let sum' = sum + 1 in
     sum_symmetry sum' grids'
   ;;

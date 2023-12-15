@@ -1,49 +1,66 @@
 open Core
 
-let still_valid test_list master_list =
-  let rec still_valid' test master idx = 
-    (* printf "idx: %d\n" idx;
-    printf "test: %s\n" (List.to_string ~f:Int.to_string test);
-    printf "master: %s\n" (List.to_string ~f:Int.to_string master); *)
-    match test, master with
-    | [], _ -> true
-    | _, [] -> false
-    | _, _ ->
-      (match idx with
-      | 0 -> 
-        let test_element = List.nth_exn test idx in
-        let master_element = List.nth_exn master idx in
-        (match (test_element < master_element) with
-        | true -> 
-          (* keep going *)
-          still_valid' test master (idx + 1)
-        | false -> false)
-      | _ when idx > (List.length test) - 1 -> true
-      | _ ->
-        let test_element = List.nth_exn test idx in
-        let prev_test_element = List.nth_exn test (idx - 1) in
-        let master_element = List.nth_exn master idx in
-        let prev_master_element = List.nth_exn master (idx - 1) in
-        (match (test_element < master_element && prev_test_element = prev_master_element) with
-        | true -> 
-          (* keep going *)
-          still_valid' test master (idx + 1)
-        | false -> false))
+let read_grids filename =
+  let data = In_channel.read_all filename in
+  List.map ~f:(fun grid -> 
+    List.map ~f:String.to_list (String.split grid ~on:'\n')) (Str.split (Str.regexp "\n\n") data)
+
+let calc_badness (grid: char list list) part2 axis =
+  let rows = List.length grid in
+  let cols = List.hd_exn grid |> List.length in
+  let calc_axis_badness pos delta_pos get_other_pos =
+    let badness = ref 0 in
+    for delta = 0 to delta_pos - 1 do
+      let pos1 = pos - delta in
+      let pos2 = pos + 1 + delta in
+      if pos1 >= 0 && pos2 < delta_pos then
+        for other = 0 to get_other_pos - 1 do
+          let char1, char2 = match axis with
+            | `Vertical -> 
+              let row = List.nth_exn grid other in
+              (List.nth_exn row pos1, List.nth_exn row pos2)
+            | `Horizontal -> 
+              let row1 = List.nth_exn grid pos1 in
+              let row2 = List.nth_exn grid pos2 in
+              (List.nth_exn row1 other, List.nth_exn row2 other)
+          in
+          if (not (Char.equal char1 char2)) then incr badness
+        done
+    done;
+    !badness
   in
-  List.length test_list <= List.length master_list && still_valid' test_list master_list 0
-;;
+  let total = ref 0 in
+  for i = 0 to (match axis with `Vertical -> cols - 1 | `Horizontal -> rows - 1) - 1 do
+    let badness = 
+      match axis with
+      | `Vertical -> calc_axis_badness i cols rows
+      | `Horizontal -> calc_axis_badness i rows cols
+    in
+    if badness = (if part2 then 1 else 0) then
+      total := !total + 
+      match axis with 
+      | `Horizontal -> 100 * (i + 1)
+      | `Vertical -> 1 * (i + 1)
+(*         
+        (if axis = `Horizontal then 100 else 1) * (i + 1) *)
+  done;
+  !total
 
-  let master_list = [4;1;1] in
-  let first_try = [1;1;2;3] in
-  let second_try = [1] in
-  let third_try = [2] in
-  let fourth_try = [1;1] in
+let () =
+  let grids = read_grids "../data/day-13" in
+  let total_sum = ref 0 in
+  List.iter grids ~f:(fun grid ->
+    let ans = (calc_badness grid false `Vertical) + (calc_badness grid false `Horizontal) in
+    total_sum := !total_sum + ans;
+  );
+  Printf.printf "13.1: %d\n" !total_sum;
 
-  printf "first_try: %b\n" (still_valid first_try master_list);
-  printf "second_try: %b\n" (still_valid second_try master_list);
-  printf "third_try: %b\n" (still_valid third_try master_list);
-  printf "fourth_try: %b\n" (still_valid fourth_try master_list);
-
+  let total_sum = ref 0 in
+  List.iter grids ~f:(fun grid ->
+    let ans = (calc_badness grid true `Vertical) + (calc_badness grid true `Horizontal) in
+    total_sum := !total_sum + ans;
+  );
+  Printf.printf "13.2: %d\n" !total_sum;
 
   (*
   dune build try_this.exe && dune exec ./try_this.exe  
