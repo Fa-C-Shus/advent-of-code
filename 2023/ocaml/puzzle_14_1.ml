@@ -74,7 +74,7 @@ let rotate_grid grid =
   new_grid
 ;;
 
-let roll_grid grid =
+let tilt_grid grid =
   let rows = Array.length grid in
   let cols = Array.length grid.(0) in
 
@@ -104,7 +104,7 @@ let spin_grid grid =
   match times with
   | 0 -> grid
   | _ -> 
-    let rolled_grid = roll_grid grid in
+    let rolled_grid = tilt_grid grid in
     (* print_grid rolled_grid; *)
     let rotated_grid = rotate_grid rolled_grid in
     (* print_grid rotated_grid; *)
@@ -114,7 +114,7 @@ let spin_grid grid =
 ;;
 
 let part_1 grid =
-  let grid' = roll_grid grid in
+  let grid' = tilt_grid grid in
   print_grid grid';
   score grid'
 ;;
