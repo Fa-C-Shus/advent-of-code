@@ -54,3 +54,42 @@ let trim str =
 let split_string str = 
   Str.split (Str.regexp " +") str
 ;;
+
+module type ORDERED = sig
+  type t
+  val compare : t -> t -> int
+end
+
+module MinHeap (Ord: ORDERED) : sig
+  type t
+  val empty : t
+  val is_empty : t -> bool
+  val insert : t -> Ord.t -> t
+  val find_min : t -> Ord.t option
+  val delete_min : t -> t option
+end = struct
+  type t = Empty | Node of Ord.t * t * t
+
+  let empty = Empty
+
+  let is_empty h = h = Empty
+
+  let rec merge h1 h2 = 
+    match (h1, h2) with
+    | (Empty, _) -> h2
+    | (_, Empty) -> h1
+    | (Node (x, a1, b1), Node (y, a2, b2)) ->
+        if Ord.compare x y <= 0
+        then Node (x, b1, merge a1 h2)
+        else Node (y, b2, merge h1 a2)
+
+  let insert h x = merge h (Node (x, Empty, Empty))
+
+  let find_min = function
+    | Empty -> None
+    | Node (x, _, _) -> Some x
+
+  let delete_min = function
+    | Empty -> None
+    | Node (_, a, b) -> Some (merge a b)
+end

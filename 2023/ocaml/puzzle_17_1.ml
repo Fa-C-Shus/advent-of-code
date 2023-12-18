@@ -3,7 +3,7 @@ open Helper
 
 type coord = int * int  (* (x, y) coordinates *)
 
-type path_node = int * int * int * coord * int * coord list
+type path_node = int * int * int * coord * int
 (* let equal_path_node (a1, b1, c1, (x1, y1), d1, _) (a2, b2, c2, (x2, y2), d2, _) =
   a1 = a2 && b1 = b2 && c1 = c2 && x1 = x2 && y1 = y2 && d1 = d2
 ;; *)
@@ -16,7 +16,7 @@ type path_node = int * int * int * coord * int * coord list
 
 module PathNodeOrd : ORDERED with type t = path_node = struct
   type t = path_node
-  let compare (total1, _, _, _, _, _) (total2, _, _, _, _, _) =
+  let compare (total1, _, _, _, _) (total2, _, _, _, _) =
     Stdlib.compare total1 total2
 end
 
@@ -90,8 +90,8 @@ let navigate grid min_dir_moves max_dir_moves =
   let visited = VisitedItemSet.empty in
   (* let paths_to_explore : path_node list = [(0,0,0,right,1,[]);(0,0,0,down,1,[])] in *)
   let paths_to_explore = PathNodeHeap.empty in
-  let paths_to_explore = PathNodeHeap.insert paths_to_explore (0,0,0,right,1,[]) in
-  let paths_to_explore = PathNodeHeap.insert paths_to_explore (0,0,0,down,1,[]) in
+  let paths_to_explore = PathNodeHeap.insert paths_to_explore (0,0,0,right,1) in
+  let paths_to_explore = PathNodeHeap.insert paths_to_explore (0,0,0,down,1) in
   (* printf "min_dir_moves: %d, max_dir_moves: %d\n" min_dir_moves max_dir_moves; *)
 
   let rec navigate_remaining_paths paths_to_explore visited =
@@ -116,7 +116,7 @@ let navigate grid min_dir_moves max_dir_moves =
       
         (* printf "\tmin_node: ";
         print_path_node min_node; *)
-      let (total, x, y, dir_moved, curr_dir_len, curr_path) = min_node in
+      let (total, x, y, dir_moved, curr_dir_len) = min_node in
       (* printf "path Count: %d (%d, %d) -> %d\n" (List.length paths_to_explore) x y total; *)
       (* printf "\ttotal: %d\n" total; *)
       let visit_node = (x, y, dir_moved, curr_dir_len) in
@@ -132,7 +132,7 @@ let navigate grid min_dir_moves max_dir_moves =
         let visited' = Set.add visited visit_node in
 
         let dir_exceeded = (curr_dir_len > max_dir_moves) in
-        (* printf "\tdir_exceeded: %b\n" dir_exceeded; *)
+        (* printf "\tdir_exceeded: %b\tc: %d\tm: %d\n" dir_exceeded curr_dir_len max_dir_moves; *)
 
         match dir_exceeded with
         | true -> 
@@ -153,8 +153,8 @@ let navigate grid min_dir_moves max_dir_moves =
             let total' = total + (digit_char_to_int loc_val) in
             (* printf "\t\tbump total': %d\n" total'; *)
 
-            let min_dir_exceeded = (curr_dir_len >= min_dir_moves) in
-            (* printf "\tmin_dir_exceeded: %b\n" min_dir_exceeded; *)
+            let min_dir_exceeded = (curr_dir_len > min_dir_moves) in
+            (* printf "\tmin_dir_exceeded: %b\tc: %d\tm: %d\n" min_dir_exceeded curr_dir_len min_dir_moves; *)
 
             let at_target = ((fst new_coord) = (fst target) && (snd new_coord) = (snd target)) in
             (* printf "\tat_target: %b\n" at_target; *)
@@ -162,10 +162,10 @@ let navigate grid min_dir_moves max_dir_moves =
             match (min_dir_exceeded && at_target) with
             | true -> 
               printf "Found target!\n";
-              printf "Length Path: %d\n" (List.length curr_path);
+              (* printf "Length Path: %d\n" (List.length curr_path);
               printf "Path: ";
               List.iter curr_path ~f:(fun (x, y) -> printf "(%d, %d) " x y);
-              printf "\n";
+              printf "\n"; *)
               total'
             | false ->
               (* I can't return to last cell *)
@@ -192,8 +192,8 @@ let navigate grid min_dir_moves max_dir_moves =
                       | true -> curr_dir_len + 1
                       | false -> 1
                     in
-                    let curr_path' = List.append curr_path [new_coord] in
-                    let next_node = (total', fst new_coord, snd new_coord, dir, new_dir_len, curr_path') in
+                    (* let curr_path' = List.append curr_path [new_coord] in *)
+                    let next_node = (total', fst new_coord, snd new_coord, dir, new_dir_len) in
                     let nodes' = List.append nodes [next_node] in
                     get_next_nodes (dir_idx + 1) nodes'
                 in
@@ -214,8 +214,8 @@ let navigate grid min_dir_moves max_dir_moves =
 
 let () =
   (* print_grid grid; *)
-  (* let puzzle1 = navigate grid 0 3 in 
-  printf "17.1: %d\n" puzzle1; *)
+  let puzzle1 = navigate grid 0 3 in 
+  printf "17.1: %d\n" puzzle1;
   
   let puzzle2 = navigate grid 4 10 in
   printf "17.2: %d\n" puzzle2;
@@ -228,7 +228,6 @@ let () =
   | score -> printf "17.2: %d\n" score;; *)
 ;;
 
-  (*
-  dune build try_this.exe && cat ../data/day-17-test | dune exec ./try_this.exe  
-  dune build try_this.exe && dune exec ./try_this.exe    
-  *)
+(*
+  dune build puzzle_17_1.exe && dune exec ./puzzle_17_1.exe   
+*)
