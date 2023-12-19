@@ -42,6 +42,21 @@ let display_path path ignore =
     display_path' path
 ;;
 
+(* find the min and max x and y *)
+let bounding_box path =
+  let rec bounding_box' path (min_x, min_y, max_x, max_y) =
+    match path with
+    | [] -> ((min_x, min_y), (max_x, max_y))
+    | (x, y) :: t ->
+      let min_x' = if x < min_x then x else min_x in
+      let min_y' = if y < min_y then y else min_y in
+      let max_x' = if x > max_x then x else max_x in
+      let max_y' = if y > max_y then y else max_y in
+      bounding_box' t (min_x', min_y', max_x', max_y')
+  in
+  bounding_box' path (max_int, max_int, min_int, min_int)
+;;
+
 let shoelace_and_pick path_tiles path =
   let path_size = List.length path in
   let max_index = path_size - 1 in
@@ -51,6 +66,10 @@ let shoelace_and_pick path_tiles path =
       (* acc is the interior amount *)
       (* picks theorem *)
       display_path path true;
+
+      let ((min_x, min_y), (max_x, max_y)) = bounding_box path in
+      printf "top left: (%d, %d), bottom right: (%d, %d)\n" min_x min_y max_x max_y;
+
       (* printf "sum: %d\n" acc; *)
       (* divide by 2 because we have added the entire width *)
       let shoelace = abs(acc) / 2 in
@@ -141,7 +160,7 @@ let dig =
 
 let () =
   let puzzle1 = dig in 
-  printf "18.1: %d\n" puzzle1;
+  printf "18.2: %d\n" puzzle1;
 ;;
 
 (*
